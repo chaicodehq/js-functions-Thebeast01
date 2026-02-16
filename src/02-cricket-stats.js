@@ -1,3 +1,5 @@
+import { calculateDosaOrder } from "./01-dosa-counter";
+
 /**
  * 🏏 Cricket Player Stats Dashboard
  *
@@ -38,21 +40,45 @@
  *   // => { name: "Jadeja", strikeRate: 175, economy: 7.5, battingAvg: 28.57, isAllRounder: false }
  */
 export const calcStrikeRate = (runs, balls) => {
-  // Your code here
+    if (runs < 0 || balls <= 0) {
+        return 0
+    }
+    return parseFloat(((runs / balls) * 100).toFixed(2))
 };
 
 export const calcEconomy = (runsConceded, overs) => {
-  // Your code here
+    if (overs <= 0 || runsConceded < 0) {
+        return 0
+    }
+    return parseFloat((runsConceded / overs).toFixed(2))
 };
 
 export const calcBattingAvg = (totalRuns, innings, notOuts = 0) => {
-  // Your code here
+    if (innings - notOuts <= 0) {
+        return 0
+    }
+    let battingAvg = totalRuns / (innings - notOuts);
+    return parseFloat(battingAvg.toFixed(2))
 };
 
 export const isAllRounder = (battingAvg, economy) => {
-  // Your code here
+    return (battingAvg > 30 && economy < 8)
 };
 
 export const getPlayerCard = (player) => {
-  // Your code here
+    if (!player || !player.name) {
+        return null
+    }
+    const { name, runs, balls, totalRuns, innings, notOuts, runsConceded, overs } = player
+    const strikeRates = calcStrikeRate(runs, balls);
+    const economys = calcEconomy(runsConceded, overs);
+    const battingAvgs = calcBattingAvg(totalRuns, innings, notOuts)
+    const isAllRounders = isAllRounder(battingAvgs, economys);
+    return {
+        name,
+        strikeRate: strikeRates,
+        economy: economys,
+        battingAvg: battingAvgs,
+        isAllRounder: isAllRounders
+    }
 };

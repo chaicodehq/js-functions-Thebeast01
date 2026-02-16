@@ -53,29 +53,81 @@
  *   // => { name: "Haldi", form: "powder", packed: true, label: "Haldi Masala" }
  */
 export function pipe(...fns) {
-  // Your code here
+    if (fns.length === 0) {
+        return x => x;
+    }
+
+    return function(input) {
+        return fns.reduce((result, fn) => {
+            return typeof fn === "function" ? fn(result) : result;
+        }, input);
+    };
 }
 
 export function compose(...fns) {
-  // Your code here
+    if (fns.length === 0) {
+        return x => x;
+    }
+
+    return function(input) {
+        return fns.reduceRight((result, fn) => {
+            return typeof fn === "function" ? fn(result) : result;
+        }, input);
+    };
 }
 
 export function grind(spice) {
-  // Your code here
+    if (!spice || typeof spice !== 'object') return spice;
+    return {
+        ...spice,
+        form: "powder"
+    }
 }
 
 export function roast(spice) {
-  // Your code here
+    if (!spice || typeof spice !== 'object') return spice;
+    return {
+        ...spice,
+        roasted: true,
+        aroma: "strong"
+    }
 }
 
 export function mix(spice) {
-  // Your code here
+    if (!spice || typeof spice !== 'object') return spice;
+    return {
+        ...spice,
+        mixed: true
+
+    }
 }
 
 export function pack(spice) {
-  // Your code here
+
+    if (!spice || typeof spice !== 'object') return spice;
+
+    return { ...spice, packed: true, label: `${spice.name} Masala` }
 }
 
 export function createRecipe(steps) {
-  // Your code here
+    if (!Array.isArray(steps) || steps.length === 0) {
+        return x => x;
+    }
+
+    const stepMap = {
+        grind,
+        roast,
+        mix,
+        pack
+    };
+
+    const functions = steps
+        .map(step => stepMap[step])
+        .filter(fn => typeof fn === "function");
+
+    if (functions.length === 0) {
+        return x => x;
+    }
+
+    return pipe(...functions)
 }

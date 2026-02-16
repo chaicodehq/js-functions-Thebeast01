@@ -45,13 +45,66 @@
  *   pricer("gold", true)  // => 200 * 1.5 * 1.3 = 390
  */
 export function createDialogueWriter(genre) {
-  // Your code here
+    let validGenre = ['comedy', 'romance', 'action', 'drama'];
+    if (typeof genre !== 'string' || genre.trim() === "" || !validGenre.includes(genre)) {
+        return null
+    }
+    let result = (hero, villain) => {
+        if (!villain || !hero || hero.trim() === "" || villain.trim() === "") {
+            return "..."
+        }
+        switch (genre) {
+            case "action":
+                return `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`
+            case "comedy":
+                return `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`
+            case "romance":
+                return `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`
+            case "drama":
+                return `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`
+        }
+    }
+    return result;
+
 }
 
 export function createTicketPricer(basePrice) {
-  // Your code here
+    if(typeof basePrice !== 'number' || basePrice <=0) {
+        return null
+    }
+    let result = (seatType, isWeekend = false) =>{
+        if(!["gold","silver","platinum"].includes(seatType)){
+            return null
+        }
+       switch(seatType){
+           case "silver" :
+               return isWeekend ? (basePrice * 1*1.3) : (basePrice * 1);
+
+           case "gold" :
+               return isWeekend ? (basePrice * 1.5*1.3) : (basePrice * 1.5);
+
+           case "platinum" :
+               return isWeekend ? (basePrice * 2*1.3) : (basePrice * 2);
+       } 
+    } 
+    return result;
 }
 
 export function createRatingCalculator(weights) {
-  // Your code here
+    if(!weights || typeof weights !== 'object') {
+        return null
+    }
+   const result = (scores) => {
+       if(!scores || typeof scores !== 'object') {
+           return null
+       }
+       let total = 0 ;
+       for(let key in weights) {
+           if( key in scores) {
+               total += scores[key] * weights[key];
+           }
+       }
+    return parseFloat(total.toFixed(1));
+   } 
+   return result 
 }
